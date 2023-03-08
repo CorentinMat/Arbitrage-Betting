@@ -3,7 +3,7 @@ package main
 // Final Data
 type CleanBet struct {
 	Title string
-	Odd   float32
+	Odd   float64
 }
 type CleanMatch struct {
 	Title string
@@ -11,4 +11,4 @@ type CleanMatch struct {
 	Bet2  CleanBet
 	Draw  CleanBet
 }
-type PMUData []*CleanMatch
+type PMUData []CleanMatch
