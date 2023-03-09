@@ -1,4 +1,4 @@
-package main
+package PMU
 
 // Final Data
 type CleanBet struct {

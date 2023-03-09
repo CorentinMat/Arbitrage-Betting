@@ -1,8 +1,7 @@
-package main
+package winamax
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -107,10 +106,9 @@ func CleanJson(odds map[string]float64, outcomes map[string]OutcomesId, bets map
 
 }
 
-func main() {
+func Winamax() WinamaxData {
 	winamaxData := get_json()
-	for k := range winamaxData {
-		fmt.Println(winamaxData[k])
-	}
+
+	return winamaxData
 	// ArbitrageCheck(winamaxData)
 }

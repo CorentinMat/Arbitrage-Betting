@@ -1,4 +1,4 @@
-package main
+package PMU
 
 import (
 	"fmt"
@@ -86,7 +86,7 @@ func get_page() PMUData {
 	return PmuData
 
 }
-func main() {
+func Pmu() PMUData {
 	pmuData := get_page()
-	fmt.Println(pmuData)
+	return pmuData
 }
