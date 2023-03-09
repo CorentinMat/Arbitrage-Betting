@@ -82,7 +82,7 @@ type Data struct {
 	Matches              map[string]MatchId    `json:"matches"` // peut être à changer
 	Bets                 map[string]BetId      `json:"bets"`    // peut êterr à changer
 	Outcomes             map[string]OutcomesId `json:"outcomes"`
-	Odds                 map[string]float32    `json:"odds"`
+	Odds                 map[string]float64    `json:"odds"`
 	Settings             map[string]any        `json:"settings"`
 	Cc                   map[string]any        `json:"cc"`
 	Browsers             map[string]any        `json:"browser"`
@@ -93,7 +93,7 @@ type Data struct {
 
 type CleanBet struct {
 	Title string
-	Odd   float32 // peut être mettre number ???
+	Odd   float64 // peut être mettre number ???
 }
 type CleanMatch struct {
 	Title string

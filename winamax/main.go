@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -60,7 +61,7 @@ func get_json() WinamaxData {
 	return CleanJson(odds, outcomes, bets, matches)
 
 }
-func CleanJson(odds map[string]float32, outcomes map[string]OutcomesId, bets map[string]BetId, matches map[string]MatchId) WinamaxData {
+func CleanJson(odds map[string]float64, outcomes map[string]OutcomesId, bets map[string]BetId, matches map[string]MatchId) WinamaxData {
 	// cleanOdds := make(map[string]float32) // get odds for players
 	// betId := make(map[int]int)
 	winamaxData := make(WinamaxData)
@@ -73,8 +74,14 @@ func CleanJson(odds map[string]float32, outcomes map[string]OutcomesId, bets map
 	// }
 	for k := range matches {
 		result := strconv.Itoa(matches[k].MainBetId)
-		oddsId1 := bets[result].Outcomes[0]
-		oddsId2 := bets[result].Outcomes[1]
+		var oddsId1 int
+		var oddsId2 int
+		// je sais pas pk ya un 0 qui c'est mit dans les data  WINAMAX ?????
+		if result != "0" {
+			oddsId1 = bets[result].Outcomes[0]
+			oddsId2 = bets[result].Outcomes[1]
+		}
+
 		// initialize check if there are no tennis matches in ....
 		draw := 0
 		if len(bets[result].Outcomes) == 3 {
@@ -102,5 +109,8 @@ func CleanJson(odds map[string]float32, outcomes map[string]OutcomesId, bets map
 
 func main() {
 	winamaxData := get_json()
-	ArbitrageCheck(winamaxData)
+	for k := range winamaxData {
+		fmt.Println(winamaxData[k])
+	}
+	// ArbitrageCheck(winamaxData)
 }

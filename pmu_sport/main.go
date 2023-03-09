@@ -9,7 +9,19 @@ import (
 	"github.com/gocolly/colly"
 )
 
-func get_page() string {
+func cleanOdds(bet string) float64 {
+
+	odds := strings.ReplaceAll(bet, ",", ".")
+	oddsF, err := strconv.ParseFloat(odds, 32)
+	if err != nil {
+		log.Fatalln("amam", err)
+	}
+	oddsF = float64(int(oddsF*100)) / 100
+	return oddsF
+}
+
+// SCRAPPING À REFAIRE CAR SCRAPP PAS TOUS LES MATCH QUE CEUX QUI S'AFFICHE PAS CEUX AVEC VOIR PLUS D'ÉLÉMENTS ................
+func get_page() PMUData {
 	var PmuData PMUData
 
 	var data []string
@@ -20,26 +32,34 @@ func get_page() string {
 	// Find and visit all links
 	c.OnHTML("div.pmu-event-list-grid-highlights-formatter-row", func(e *colly.HTMLElement) {
 		var cleanMatch CleanMatch
-		var err error
 
 		if e.Text != "" && e.Text != "\n" {
 			data = append(data, strings.ReplaceAll(e.Text, " ", ""))
 
 		}
-		cleanMatch.Title = e.ChildText(".trow--event ")
-		cleanMatch.Bet1.Title = strings.Split(e.ChildText(".trow--event "), `//`)[0]
-		bet1 := strings.Split(e.ChildText(".hierarchy-outcome-price"), " ")[0]
-		cleanMatch.Bet1.Odd, err = strconv.ParseFloat(bet1, 32)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		// bet2 := strings.Split(e.ChildText(".hierarchy-outcome-price"), " ")[1]
-		// draw := strings.Split(bet2, " ")[1]
-		// bet2 = strings.Split(bet2, " ")[0]
+		temp := e.ChildText(".trow--event ")
+		temp = strings.ReplaceAll(temp, " ", "")
+		temp = strings.ReplaceAll(temp, "\n", "")
+		cleanMatch.Title = temp
+		temp = strings.Split(e.ChildText(".trow--event "), `//`)[0]
+		temp = strings.ReplaceAll(temp, " ", "")
+		temp = strings.ReplaceAll(temp, "\n", "")
+		cleanMatch.Bet1.Title = strings.ReplaceAll(temp, " ", "")
+		temp = strings.Split(e.ChildText(".trow--event "), `//`)[1]
+		temp = strings.ReplaceAll(temp, " ", "")
+		temp = strings.ReplaceAll(temp, "\n", "")
+		cleanMatch.Bet2.Title = strings.ReplaceAll(temp, " ", "")
+		cleanMatch.Draw.Title = "DRAW "
+		bet1 := strings.Split(e.ChildText(".hierarchy-outcome-price"), "\n")[0]
+		bet1 = strings.ReplaceAll(bet1, " ", "")
+		draw := strings.Split(e.ChildText(".hierarchy-outcome-price"), "\n")[1]
+		bet2 := strings.Split(e.ChildText(".hierarchy-outcome-price"), "\n")[2]
+		draw = strings.ReplaceAll(draw, " ", "")
+		bet2 = strings.ReplaceAll(bet2, " ", "")
 
-		fmt.Println("bets 1  = ", bet1)
-		// fmt.Println("bets 2  = ", bet2)
-		// fmt.Println("draw  = ", draw)
+		cleanMatch.Bet1.Odd = cleanOdds(bet1)
+		cleanMatch.Bet2.Odd = cleanOdds(bet2)
+		cleanMatch.Draw.Odd = cleanOdds(draw)
 
 		PmuData = append(PmuData, cleanMatch)
 
@@ -55,7 +75,6 @@ func get_page() string {
 		i += 1
 
 		// }
-		fmt.Println(PmuData)
 
 	})
 
@@ -63,9 +82,11 @@ func get_page() string {
 		fmt.Println("Visiting", r.URL)
 	})
 
-	c.Visit("https://paris-sportifs.pmu.fr/?_ga=2.268433678.1296634928.1677849818-1205291434.1677849818")
-	return "temp"
+	c.Visit("https://paris-sportifs.pmu.fr/pari/sport/25/football")
+	return PmuData
+
 }
 func main() {
-	fmt.Println(get_page())
+	pmuData := get_page()
+	fmt.Println(pmuData)
 }
