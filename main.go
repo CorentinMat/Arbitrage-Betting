@@ -1,19 +1,12 @@
 package main
 
 import (
-	PMU "Arbitrage_Betting/pmu_sport"
-	"Arbitrage_Betting/winamax"
+	DATA "Arbitrage_Betting/Clean_All_Data"
 	"fmt"
 )
 
 func main() {
-	winamaxData := winamax.Winamax()
-	for k := range winamaxData {
-		fmt.Println("test => ", *winamaxData[k])
-	}
-	pmuData := PMU.Pmu()
-	for k := range pmuData {
-		fmt.Println(pmuData[k])
-	}
+	data := DATA.CleanAllData()
+	fmt.Println("Final Result =>", data)
 
 }
